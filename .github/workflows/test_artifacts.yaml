@@ -25,7 +25,7 @@ jobs:
       with:
         image: "test_image:latest"
     
-    - name: Use the Upload Artifact GitHub Action
+    - name: Upload image to Jfrog
       uses: ruben-baez-mojix-com/jfrog-deployment@v1.0.2
       with:
            # Jfrog username
@@ -33,6 +33,6 @@ jobs:
            # Jfrog password
         password: ${{ secrets.JF_PASSWORD }}
            # Artifact name
-        artifact: test_image
+        artifact: action_image_artifact_test_image_latest
            # URL where artifact will be deployed
         url: ${{ secrets.JF_URL }}
