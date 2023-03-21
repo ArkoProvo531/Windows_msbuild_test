@@ -29,8 +29,8 @@ jobs:
           jfrog-password: ${{ secrets.JF_PASSWORD }}
       - run: |
           docker login arkoartifact.jfrog.io/ \
-          --user ${{ secrets.JF_USER }} \
-          --password ${{ secrets.JF_PASSWORD }}
+          -u ${{ secrets.JF_USER }} \
+          -p ${{ secrets.JF_PASSWORD }}
           
       - name: Push Docker image to JFrog registry
         run: |
