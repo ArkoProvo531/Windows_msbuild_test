@@ -23,12 +23,12 @@ jobs:
     
       - name: Step 3 - Use the Upload Artifact GitHub Action
         uses: ruben-baez-mojix-com/jfrog-deployment@v1.0.2
-         with:
+        with:
            # Jfrog username
-           username: ${{ secrets.JF_USER }}
+          username: ${{ secrets.JF_USER }}
            # Jfrog password
-           password: ${{ secrets.JF_PASSWORD }}
+          password: ${{ secrets.JF_PASSWORD }}
            # Artifact name
-           artifact: deployment_artifact
+          artifact: deployment_artifact
            # URL where artifact will be deployed
-           url: ${{ secrets.JF_URL }}
+          url: ${{ secrets.JF_URL }}
