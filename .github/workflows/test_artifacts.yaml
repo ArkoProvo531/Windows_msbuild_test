@@ -15,11 +15,11 @@ jobs:
         
       - name: Build and tag Docker image
         env:
-          DOCKER_IMAGE_NAME: "mydockerimage"
+          DOCKER_IMAGE_NAME: "myimage"
           DOCKER_IMAGE_TAG: "latest"
         run: |
           docker build -t $DOCKER_IMAGE_NAME:$DOCKER_IMAGE_TAG .
-          docker tag $DOCKER_IMAGE_NAME:$DOCKER_IMAGE_TAG https://arkoartifact.jfrog.io/ui/repos/tree/General/testdocker/$DOCKER_IMAGE_NAME:$DOCKER_IMAGE_TAG
+          docker tag $DOCKER_IMAGE_NAME:$DOCKER_IMAGE_TAG https://arkoartifact.jfrog.io/artifactory/testdocker/$DOCKER_IMAGE_NAME:$DOCKER_IMAGE_TAG
           
       - name: Login to JFrog Docker registry
         uses: jfrog/setup-jfrog-cli@v1
@@ -34,4 +34,4 @@ jobs:
           
       - name: Push Docker image to JFrog registry
         run: |
-          docker push https://arkoartifact.jfrog.io/ui/repos/tree/General/testdocker/$DOCKER_IMAGE_NAME:$DOCKER_IMAGE_TAG
+          docker push https://arkoartifact.jfrog.io/artifactory/testdocker/$DOCKER_IMAGE_NAME:$DOCKER_IMAGE_TAG
