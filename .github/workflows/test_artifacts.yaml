@@ -22,7 +22,6 @@ jobs:
         run: |
           IMAGE_ID=$(docker build -t ${{ env.DOCKER_IMAGE_NAME }}:${{ env.DOCKER_IMAGE_TAG }} . 2>/dev/null | awk '/Successfully built/{print $NF}')
           echo "Image ID is $IMAGE_ID"
-          echo "Tag name is $DOCKER_IMAGE_NAME:$DOCKER_IMAGE_TAG-$IMAGE_ID"
           docker tag $DOCKER_IMAGE_NAME arkoartifact.jfrog.io/artifactory/docker/${{ env.DOCKER_IMAGE_NAME }}
           
       - name: Login to JFrog Docker registry
@@ -38,4 +37,4 @@ jobs:
           
       - name: Push Docker image to JFrog registry
         run: |
-          docker push arkoartifact.jfrog.io/artifactory/docker/${{ env.DOCKER_IMAGE_NAME }}:${{ env.DOCKER_IMAGE_TAG }}
+          docker push arkoartifact.jfrog.io/artifactory/docker/${{ env.DOCKER_IMAGE_NAME }}
