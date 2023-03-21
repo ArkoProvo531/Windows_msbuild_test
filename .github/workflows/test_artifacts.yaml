@@ -1,38 +1,33 @@
-# Publish GitHub workflow artifacts tutorial example
-name: Publish GitHub Actions Artifacts Example
+name: Build and Publish Artifacts to JFrog
 
 on:
   workflow_dispatch:
 
-jobs:       
-  build_and_upload:
+jobs:
+  build:
     runs-on: ubuntu-latest
-
-    # Steps represent a sequence of tasks that will be executed as part of the job
-    steps:
-    - name: Checkout project
-      uses: actions/checkout@v2
-      
-    - name: Build image
-      run: |
-        docker build -t test_image:latest -<<EOF
-        FROM busybox
-        RUN touch abc.txt
-        EOF
-
-    - name: Upload image
-      uses: ishworkh/docker-image-artifact-upload@v1
-      with:
-        image: "test_image:latest"
     
-    - name: Upload image to Jfrog
-      uses: ruben-baez-mojix-com/jfrog-deployment@v1.0.2
-      with:
-           # Jfrog username
-        username: ${{ secrets.JF_USER }}
-           # Jfrog password
-        password: ${{ secrets.JF_PASSWORD }}
-           # Artifact name
-        artifact: action_image_artifact_test_image_latest
-           # URL where artifact will be deployed
-        url: ${{ secrets.JF_URL }}
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+        
+      - name: Setup Java
+        uses: actions/setup-java@v1
+        with:
+          java-version: '11'
+          
+      - name: Build with Gradle
+        run: ./gradlew build
+        
+      - name: Publish to JFrog
+        uses: jfrog/setup-jfrog-cli@v1
+        with:
+          jfrog-url: 'https://arkoartifact.jfrog.io/'
+          jfrog-username: ${{ secrets.JF_USER }}
+          jfrog-password: ${{ secrets.JF_PASSWORD }}
+      - run: |
+          jfrog rt upload \
+          --url ${{ secrets.JFROG_URL }} \
+          --user ${{ secrets.JFROG_USERNAME }} \
+          --password ${{ secrets.JFROG_PASSWORD }} \
+          build/libs/*.jar test_artifact/
