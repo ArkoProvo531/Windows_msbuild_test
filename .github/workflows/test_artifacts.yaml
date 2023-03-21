@@ -28,7 +28,7 @@ jobs:
           jfrog-username: ${{ secrets.JF_USER }}
           jfrog-password: ${{ secrets.JF_PASSWORD }}
       - run: |
-          jfrog rt docker-login https://arkoartifact.jfrog.io/ \
+          jfrog rt docker-login arkoartifact.jfrog.io/ \
           --user ${{ secrets.JF_USER }} \
           --password ${{ secrets.JF_PASSWORD }}
           
