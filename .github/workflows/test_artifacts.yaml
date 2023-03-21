@@ -1,36 +1,37 @@
-name: Build and Publish Artifacts to JFrog
+name: Build and Publish Docker Images to JFrog
 
 on:
   push:
     branches:
       - master
-  workflow_dispatch:
 
 jobs:
   build:
     runs-on: ubuntu-latest
-    
+
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
         
-      - name: Setup Java
-        uses: actions/setup-java@v1
-        with:
-          java-version: '11'
+      - name: Build and tag Docker image
+        env:
+          DOCKER_IMAGE_NAME: "my-docker-image"
+          DOCKER_IMAGE_TAG: "latest"
+        run: |
+          docker build -t $DOCKER_IMAGE_NAME:$DOCKER_IMAGE_TAG .
+          docker tag $DOCKER_IMAGE_NAME:$DOCKER_IMAGE_TAG https://arkoartifact.jfrog.io/ui/repos/tree/General/docker-local/$DOCKER_IMAGE_NAME:$DOCKER_IMAGE_TAG
           
-      - name: Build with Gradle
-        run: ./gradlew build
-        
-      - name: Publish to JFrog
+      - name: Login to JFrog Docker registry
         uses: jfrog/setup-jfrog-cli@v1
         with:
-          jfrog-url: 'https://arkoartifact.jfrog.io/'
+          jfrog-url: 'https://your-jfrog-instance.com'
           jfrog-username: ${{ secrets.JF_USER }}
           jfrog-password: ${{ secrets.JF_PASSWORD }}
       - run: |
-          jfrog rt upload \
-          --url ${{ secrets.JFROG_URL }} \
+          jfrog rt docker-login https://arkoartifact.jfrog.io/ \
           --user ${{ secrets.JFROG_USERNAME }} \
-          --password ${{ secrets.JFROG_PASSWORD }} \
-          build/libs/*.jar test_artifact/
+          --password ${{ secrets.JFROG_PASSWORD }}
+          
+      - name: Push Docker image to JFrog registry
+        run: |
+          docker push https://arkoartifact.jfrog.io/ui/repos/tree/General/docker-local/$DOCKER_IMAGE_NAME:$DOCKER_IMAGE_TAG
