@@ -1,0 +1,35 @@
+name: Push Artifacts to JFrog Artifactory
+
+on:
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v2
+
+    - name: Set up Python
+      uses: actions/setup-python@v2
+      with:
+        python-version: 3.x
+
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install -r requirements.txt
+
+    - name: Build artifact
+      run: python area_calc.py
+
+    - name: Push artifact to Artifactory
+      env:
+        ARTIFACTORY_URL: https://arkoartifact.jfrog.io/artifactory/testpy/
+        ARTIFACTORY_USERNAME: ${{ secrets.JF_USER }}
+        ARTIFACTORY_PASSWORD: ${{ secrets.JF_PASSWORD }}
+        ARTIFACTORY_REPO: testpy
+      run: |
+        pip install jfrog-python-utils
+        jfrog rt u dist/* "generic-local/${{ env.ARTIFACTORY_REPO }}" --url="${{ env.ARTIFACTORY_URL }}" --user="${{ env.ARTIFACTORY_USERNAME }}" --password="${{ env.ARTIFACTORY_PASSWORD }}"
