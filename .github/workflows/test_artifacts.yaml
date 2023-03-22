@@ -17,14 +17,6 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v2
         
-      - name: Build and tag Docker image
-        shell: sh
-        run: |
-          IMAGE_ID=$(docker build -t ${{ env.DOCKER_IMAGE_NAME }}:${{ env.DOCKER_IMAGE_TAG }} . 2>/dev/null | awk '/Successfully built/{print $NF}')
-          echo "$IMAGE_ID"
-          docker container commit $IMAGE_ID ${{ env.DOCKER_IMAGE_NAME }}:${{ env.DOCKER_IMAGE_TAG }}
-          docker image tag ${{ env.DOCKER_IMAGE_NAME }}:${{ env.DOCKER_IMAGE_TAG }} arkoartifact.jfrog.io/artifactory/docker/${{ env.DOCKER_IMAGE_NAME }}:${{ env.DOCKER_IMAGE_TAG }}
-          
       - name: Login to JFrog Docker registry
         uses: jfrog/setup-jfrog-cli@v1
         with:
@@ -34,8 +26,15 @@ jobs:
       - run: |
           docker login arkoartifact.jfrog.io/ \
           -u ${{ secrets.JF_USER }} \
-          -p ${{ secrets.JF_PASSWORD }}
-          
+          -p ${{ secrets.JF_PASSWORD }}   
+        
+      - name: Build and tag Docker image
+        shell: sh
+        run: |
+          docker build -t ${{ env.DOCKER_IMAGE_NAME }}:${{ env.DOCKER_IMAGE_TAG }} .
+          docker tag ${{ env.DOCKER_IMAGE_NAME }}:${{ env.DOCKER_IMAGE_TAG }} arkoartifact.jfrog.io/artifactory/docker/${{ env.DOCKER_IMAGE_NAME }}:${{ env.DOCKER_IMAGE_TAG }}
+              
       - name: Push Docker image to JFrog registry
+        shell: sh
         run: |
           docker image push arkoartifact.jfrog.io/artifactory/docker/${{ env.DOCKER_IMAGE_NAME }}:${{ env.DOCKER_IMAGE_TAG }}
