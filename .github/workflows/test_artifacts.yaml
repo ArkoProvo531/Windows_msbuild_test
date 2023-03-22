@@ -28,7 +28,7 @@ jobs:
           -u ${{ secrets.JF_USER }} \
           -p ${{ secrets.JF_PASSWORD }}   
           docker build -t ${{ env.DOCKER_IMAGE_NAME }}:${{ env.DOCKER_IMAGE_TAG }} .
-          docker tag ${{ env.DOCKER_IMAGE_NAME }}:${{ env.DOCKER_IMAGE_TAG }} arkoartifact.jfrog.io/artifactory/dockertest/${{ env.DOCKER_IMAGE_NAME }}:${{ env.DOCKER_IMAGE_TAG }}
+          docker tag arkoartifact.jfrog.io/artifactory/dockertest/${{ env.DOCKER_IMAGE_NAME }}:${{ env.DOCKER_IMAGE_TAG }} dockertest/ 
           docker push arkoartifact.jfrog.io/artifactory/dockertest/${{ env.DOCKER_IMAGE_NAME }}:${{ env.DOCKER_IMAGE_TAG }}
         
       - name: Build and tag Docker image
