@@ -32,9 +32,9 @@ jobs:
         shell: sh
         run: |
           docker build -t ${{ env.DOCKER_IMAGE_NAME }}:${{ env.DOCKER_IMAGE_TAG }} .
-          docker tag ${{ env.DOCKER_IMAGE_NAME }}:${{ env.DOCKER_IMAGE_TAG }} dockertest:arkoartifact.jfrog.io/artifactory/dockertest/${{ env.DOCKER_IMAGE_NAME }}:${{ env.DOCKER_IMAGE_TAG }}
+          docker tag ${{ env.DOCKER_IMAGE_NAME }}:${{ env.DOCKER_IMAGE_TAG }} arkoartifact.jfrog.io/artifactory/dockertest/${{ env.DOCKER_IMAGE_NAME }}:${{ env.DOCKER_IMAGE_TAG }} dockertest/
               
       - name: Push Docker image to JFrog registry
         shell: sh
         run: |
-          docker image push arkoartifact.jfrog.io/artifactory/docker/${{ env.DOCKER_IMAGE_NAME }}:${{ env.DOCKER_IMAGE_TAG }}
+          docker image push arkoartifact.jfrog.io/artifactory/dockertest/${{ env.DOCKER_IMAGE_NAME }}:${{ env.DOCKER_IMAGE_TAG }}
