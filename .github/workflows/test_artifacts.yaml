@@ -7,7 +7,7 @@ on:
       
 env:
   DOCKER_IMAGE_NAME: "myimage"
-  DOCKER_IMAGE_TAG: "latest"      
+  DOCKER_IMAGE_TAG: "1.0.0"      
 
 jobs:
   build:
@@ -18,7 +18,7 @@ jobs:
         uses: actions/checkout@v2
         
       - name: Login to JFrog Docker registry
-        uses: jfrog/setup-jfrog-cli@v1
+        uses: jfrog/setup-jfrog-cli@v2.4.1
         with:
           jfrog-url: 'https://arkoartifact.jfrog.io/'
           jfrog-username: ${{ secrets.JF_USER }}
@@ -27,14 +27,17 @@ jobs:
           docker login arkoartifact.jfrog.io/ \
           -u ${{ secrets.JF_USER }} \
           -p ${{ secrets.JF_PASSWORD }}   
+          docker build -t ${{ env.DOCKER_IMAGE_NAME }}:${{ env.DOCKER_IMAGE_TAG }} .
+          docker tag ${{ env.DOCKER_IMAGE_NAME }}:${{ env.DOCKER_IMAGE_TAG }} arkoartifact.jfrog.io/artifactory/dockertest/${{ env.DOCKER_IMAGE_NAME }}:${{ env.DOCKER_IMAGE_TAG }}
+          docker push arkoartifact.jfrog.io/artifactory/dockertest/${{ env.DOCKER_IMAGE_NAME }}:${{ env.DOCKER_IMAGE_TAG }}
         
       - name: Build and tag Docker image
         shell: sh
         run: |
           docker build -t ${{ env.DOCKER_IMAGE_NAME }}:${{ env.DOCKER_IMAGE_TAG }} .
-          docker tag ${{ env.DOCKER_IMAGE_NAME }}:${{ env.DOCKER_IMAGE_TAG }} arkoartifact.jfrog.io/artifactory/dockertest/${{ env.DOCKER_IMAGE_NAME }}:${{ env.DOCKER_IMAGE_TAG }} dockertest/
+          docker tag ${{ env.DOCKER_IMAGE_NAME }}:${{ env.DOCKER_IMAGE_TAG }} arkoartifact.jfrog.io/artifactory/dockertest/${{ env.DOCKER_IMAGE_NAME }}:${{ env.DOCKER_IMAGE_TAG }}
               
       - name: Push Docker image to JFrog registry
         shell: sh
         run: |
-          docker image push arkoartifact.jfrog.io/artifactory/dockertest/${{ env.DOCKER_IMAGE_NAME }}:${{ env.DOCKER_IMAGE_TAG }}
+          docker push arkoartifact.jfrog.io/artifactory/dockertest/${{ env.DOCKER_IMAGE_NAME }}:${{ env.DOCKER_IMAGE_TAG }}
