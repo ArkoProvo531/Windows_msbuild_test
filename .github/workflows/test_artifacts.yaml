@@ -1,9 +1,7 @@
 name: Build and Publish Docker Images to JFrog
 
 on:
-  push:
-    branches:
-      - master
+  workflow_dispatch:
       
 env:
   DOCKER_IMAGE_NAME: "myimage"
