@@ -24,6 +24,11 @@ jobs:
 
     - name: Build artifact
       run: python area_calc.py  
+      
+    - uses: jfrog/setup-jfrog-cli@v1
+    - name: Jfrog version
+      run: | 
+        jfrog --version  
 
     - name: Push artifact to Artifactory
       env:
