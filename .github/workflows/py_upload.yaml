@@ -12,9 +12,9 @@ jobs:
       uses: actions/checkout@v2
 
     - name: Set up Python
-      uses: actions/setup-python@v2.3.3
+      uses: actions/setup-python@v2
       with:
-        python-version: 3.8
+        python-version: 3.x
 
     - name: Install dependencies
       run: |
@@ -24,15 +24,13 @@ jobs:
 
     - name: Build artifact
       run: python area_calc.py  
-      
-    - name: Install jfrog-python-utils
-      run: pip install jfrog-python-utils 
 
     - name: Push artifact to Artifactory
       env:
-        ARTIFACTORY_URL: https://arkoartifact.jfrog.io/artifactory/testpy/
+        ARTIFACTORY_URL: https://arkoartifact.jfrog.io/artifactory/
         ARTIFACTORY_USERNAME: ${{ secrets.JF_USER }}
         ARTIFACTORY_PASSWORD: ${{ secrets.JF_PASSWORD }}
         ARTIFACTORY_REPO: testpy
       run: |
-        jfrog rt u dist/* "generic-local/${{ env.ARTIFACTORY_REPO }}" --url="${{ env.ARTIFACTORY_URL }}" --user="${{ env.ARTIFACTORY_USERNAME }}" --password="${{ env.ARTIFACTORY_PASSWORD }}"
+        pip install jfrog-python-utils 
+        jfrog rt u dist/* "${{ env.ARTIFACTORY_REPO }}" --url="${{ env.ARTIFACTORY_URL }}" --user="${{ env.ARTIFACTORY_USERNAME }}" --password="${{ env.ARTIFACTORY_PASSWORD }}"
